@@ -99,11 +99,12 @@ void Game::Update()
 	if (FX->input.keyboard.IsKeyDown(KEYCODE_RIGHT)) {		
 		currentInput = KEYCODE_RIGHT;
 	}
-	else if (FX->input.keyboard.IsKeyDown(KEYCODE_LEFT)) {
+	
+	if (FX->input.keyboard.IsKeyDown(KEYCODE_LEFT)) {
 		currentInput = KEYCODE_LEFT;
 	}
 
-	else if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE)) {
+	if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE)) {
 		animatedSprite->animation = spinattack;
 		spinattack->Start();
 		attackLocked = true;
