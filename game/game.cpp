@@ -29,12 +29,21 @@ void Game::LoadResources()
 	spinattack->frames.Add(new AnimationFrame(7, 15));
 	spinattack->frames.Add(new AnimationFrame(8, 15));
 	spinattack->frames.Add(new AnimationFrame(9, 15));
+	spinattack->frames.Add(new AnimationFrame(9, 15));
+
+	headless = new Animation();
+	headless->frames.Add(new AnimationFrame(10, 15));
 
 	Size<int> tileSize(barbarianWidth, barbarianHeight);
 	Atlas* tiles = new Atlas(new Bitmap("resources/barbarian-tileset.png"), tileSize);
 	animatedSprite = new AnimatedSprite(tiles, standing);
-	animatedSprite->position.y = display->gameresolution.h - barbarianHeight;
+	animatedSprite->position.y = display->gameresolution.h - barbarianHeight - 10;
 	spritePlane->sprites.Add(animatedSprite);
+
+	dummySprite = new AnimatedSprite(tiles, headless);
+	dummySprite->position.y = display->gameresolution.h - barbarianHeight - 10;
+	dummySprite->position.x = 200;	
+	spritePlane->sprites.Add(dummySprite);
 }
 
 void Game::Start()
@@ -55,33 +64,37 @@ void Game::Finish()
 
 void Game::EventOccured(Event* What)
 {	
-	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP)
+	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP && attackLocked == false)
 	{
 		currentInput = 0;
+		animatedSprite->animation = standing;
+		walking->currentframe = 0;
 	}
 }
 
 void Game::Update()
 {
-	/*animatedSprite->animation = walking;
-	if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
-	animatedSprite->position.x += 1;
-	animatedSprite->animation = walking;
-	if (animatedSprite->position.x > 0)
-	animatedSprite->position.x -= 1;	
-	*/
-
-	if (currentInput == KEYCODE_RIGHT) {
-		animatedSprite->animation = walking;		
-		if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
+	if (attackLocked == false) {
+		if (currentInput == KEYCODE_RIGHT) {
+			animatedSprite->animation = walking;
+			if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
+				animatedSprite->position.x += 1;
+		}
+		if (currentInput == KEYCODE_LEFT) {
+			animatedSprite->animation = walking;
+			if (animatedSprite->position.x > 0)
+				animatedSprite->position.x -= 1;
+		}
+	}	
+	else if(spinattack->currentframe == 5) {
+		attackLocked = false;
+		currentInput = 0;
+		animatedSprite->animation = standing;
+		walking->currentframe = 0;
+	} else {
+		if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth) && spinattack->currentframe < 4)
 			animatedSprite->position.x += 1;
 	}
-	if (currentInput == KEYCODE_LEFT) {
-		animatedSprite->animation = walking;		
-		if (animatedSprite->position.x > 0)
-			animatedSprite->position.x -= 1;
-	}
-
 
 	if (FX->input.keyboard.IsKeyDown(KEYCODE_RIGHT)) {		
 		currentInput = KEYCODE_RIGHT;
@@ -89,12 +102,10 @@ void Game::Update()
 	else if (FX->input.keyboard.IsKeyDown(KEYCODE_LEFT)) {
 		currentInput = KEYCODE_LEFT;
 	}
+
 	else if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE)) {
 		animatedSprite->animation = spinattack;
 		spinattack->Start();
-	}
-	else {		
-		animatedSprite->animation = standing;
-		walking->currentframe = 0;
+		attackLocked = true;
 	}
 }

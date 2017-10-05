@@ -14,12 +14,16 @@ private:
 	TilemapPlane* tileMap;
 	Display* display;
 	bool attackLocked = false;
+	int attackFrameCount = 0;
 	int currentInput;
 
 	Animation* standing;
 	Animation* walking;
 	Animation* spinattack;
+	Animation* headless;
 	AnimatedSprite* animatedSprite;
+	AnimatedSprite* dummySprite;
+	AnimatedSprite* head;
 	const int barbarianHeight = 67;
 	const int barbarianWidth = 70;	
 
