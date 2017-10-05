@@ -6,7 +6,6 @@ void Game::LoadResources()
 	spritePlane = new SpritePlane(display);
 	spritePlane->draworder = SpritePlaneDrawOrder::YPOSITION;
 
-
 	background = new Sprite(new Bitmap("resources/main.bmp"));
 	background->position.x = display->gameresolution.w / 2;
 	background->position.y = display->gameresolution.h / 2;
@@ -18,10 +17,11 @@ void Game::LoadResources()
 	standing->frames.Add(new AnimationFrame(0, 30));
 	standing->frames.Add(new AnimationFrame(1, 30));
 
-	walking = new Animation();
+	walking = new Animation();	
 	walking->frames.Add(new AnimationFrame(2, 15));
 	walking->frames.Add(new AnimationFrame(3, 15));
 	walking->frames.Add(new AnimationFrame(4, 15));
+	walking->frames.Add(new AnimationFrame(0, 15));
 
 	spinattack = new Animation();
 	spinattack->frames.Add(new AnimationFrame(5, 15));
@@ -54,13 +54,10 @@ void Game::Finish()
 }
 
 void Game::EventOccured(Event* What)
-{
-	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYDOWN) {
-		
-	}
-
-	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP) {
-
+{	
+	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP)
+	{
+		currentInput = 0;
 	}
 }
 
@@ -71,11 +68,22 @@ void Game::Update()
 	animatedSprite->position.x += 1;
 	animatedSprite->animation = walking;
 	if (animatedSprite->position.x > 0)
-	animatedSprite->position.x -= 1;
+	animatedSprite->position.x -= 1;	
 	*/
 
-	if (FX->input.keyboard.IsKeyDown(KEYCODE_RIGHT)) {
-		Keyboard keyboard = FX->input.keyboard;
+	if (currentInput == KEYCODE_RIGHT) {
+		animatedSprite->animation = walking;		
+		if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
+			animatedSprite->position.x += 1;
+	}
+	if (currentInput == KEYCODE_LEFT) {
+		animatedSprite->animation = walking;		
+		if (animatedSprite->position.x > 0)
+			animatedSprite->position.x -= 1;
+	}
+
+
+	if (FX->input.keyboard.IsKeyDown(KEYCODE_RIGHT)) {		
 		currentInput = KEYCODE_RIGHT;
 	}
 	else if (FX->input.keyboard.IsKeyDown(KEYCODE_LEFT)) {
@@ -83,10 +91,10 @@ void Game::Update()
 	}
 	else if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE)) {
 		animatedSprite->animation = spinattack;
-		//FX->CreateTimer()
+		spinattack->Start();
 	}
-	else {
-		walking->currentframe = 0;
+	else {		
 		animatedSprite->animation = standing;
+		walking->currentframe = 0;
 	}
 }
