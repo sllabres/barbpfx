@@ -1,7 +1,12 @@
 #include "game.h"
+#include "player.h"
+#include "barbariananimationstore.h"
 
 void Game::LoadResources()
 {
+	gameEventHandler = new GameEventHandler();	
+	BarbarianAnimationStore* animationStore = new BarbarianAnimationStore();
+
 	display = FX->video.GetDisplay(0);
 	spritePlane = new SpritePlane(display);
 	spritePlane->draworder = SpritePlaneDrawOrder::YPOSITION;
@@ -13,37 +18,21 @@ void Game::LoadResources()
 	background->draworigin.y = background->GetDimensions().h / 2;
 	spritePlane->sprites.Add(background);
 
-	standing = new Animation();
-	standing->frames.Add(new AnimationFrame(0, 30));
-	standing->frames.Add(new AnimationFrame(1, 30));
-
-	walking = new Animation();	
-	walking->frames.Add(new AnimationFrame(2, 15));
-	walking->frames.Add(new AnimationFrame(3, 15));
-	walking->frames.Add(new AnimationFrame(4, 15));
-	walking->frames.Add(new AnimationFrame(0, 15));
-
-	spinattack = new Animation();
-	spinattack->frames.Add(new AnimationFrame(5, 15));
-	spinattack->frames.Add(new AnimationFrame(6, 15));
-	spinattack->frames.Add(new AnimationFrame(7, 15));
-	spinattack->frames.Add(new AnimationFrame(8, 15));
-	spinattack->frames.Add(new AnimationFrame(9, 15));
-	spinattack->frames.Add(new AnimationFrame(9, 15));
-
 	headless = new Animation();
 	headless->frames.Add(new AnimationFrame(10, 15));
 
 	Size<int> tileSize(barbarianWidth, barbarianHeight);
 	Atlas* tiles = new Atlas(new Bitmap("resources/barbarian-tileset.png"), tileSize);
-	animatedSprite = new AnimatedSprite(tiles, standing);
+	animatedSprite = new AnimatedSprite(tiles, animationStore->Get(BarbarianAnimationState::Standing));
 	animatedSprite->position.y = display->gameresolution.h - barbarianHeight - 10;
 	spritePlane->sprites.Add(animatedSprite);
 
-	dummySprite = new AnimatedSprite(tiles, headless);
+	player = new Player(gameEventHandler, animatedSprite, new BarbarianAnimationStore());
+	
+	/*dummySprite = new AnimatedSprite(tiles, headless);
 	dummySprite->position.y = display->gameresolution.h - barbarianHeight - 10;
 	dummySprite->position.x = 200;	
-	spritePlane->sprites.Add(dummySprite);
+	spritePlane->sprites.Add(dummySprite);*/
 }
 
 void Game::Start()
@@ -64,26 +53,30 @@ void Game::Finish()
 
 void Game::EventOccured(Event* What)
 {	
-	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP && attackLocked == false)
+	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP)
 	{
-		currentInput = 0;
-		animatedSprite->animation = standing;
-		walking->currentframe = 0;
+			gameEventHandler->Publish(new KeyboardEventData(What->data.input.keyboard.keycode, GameEventType::OnKeyUp));
+	}	
+
+	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYDOWN)
+	{	
+		gameEventHandler->Publish(new KeyboardEventData(What->data.input.keyboard.keycode, GameEventType::OnKeyDown));
 	}
 }
 
 void Game::Update()
 {
+	player->Update();
+
 	if (attackLocked == false) {
-		if (currentInput == KEYCODE_RIGHT) {
-			animatedSprite->animation = walking;
-			if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
-				animatedSprite->position.x += 1;
+		if (currentInput == KEYCODE_RIGHT) {			
+			/*if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
+				*/
 		}
 		if (currentInput == KEYCODE_LEFT) {
 			animatedSprite->animation = walking;
-			if (animatedSprite->position.x > 0)
-				animatedSprite->position.x -= 1;
+			/*if (animatedSprite->position.x > 0)
+				*/
 		}
 	}	
 	else if(spinattack->currentframe == 5) {
@@ -96,15 +89,7 @@ void Game::Update()
 			animatedSprite->position.x += 1;
 	}
 
-	if (FX->input.keyboard.IsKeyDown(KEYCODE_RIGHT)) {		
-		currentInput = KEYCODE_RIGHT;
-	}
-	
-	if (FX->input.keyboard.IsKeyDown(KEYCODE_LEFT)) {
-		currentInput = KEYCODE_LEFT;
-	}
-
-	if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE)) {
+	if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE) && !attackLocked) {
 		animatedSprite->animation = spinattack;
 		spinattack->Start();
 		attackLocked = true;

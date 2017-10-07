@@ -4,12 +4,17 @@
 #include "../framework/pfx.h"
 #include "../framework/core/indexsort.h"
 #include "../framework/core/easing.h"
+#include "gameeventhandler.h"
+#include "player.h"
 
 class Game : public Stage
 {
 
 private:	
 	SpritePlane* spritePlane;	
+	GameEventHandler* gameEventHandler;
+	Player* player;
+
 	Sprite* background;		
 	TilemapPlane* tileMap;
 	Display* display;

@@ -220,6 +220,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="game\barbariananimationstore.h" />
+    <ClInclude Include="framework\video\particle.h" />
+    <ClInclude Include="framework\video\sprite_particle.h" />
+    <ClInclude Include="framework\video\sprite_particleemitter.h" />
+    <ClInclude Include="framework\video\sprite_particle_animated.h" />
+    <ClInclude Include="framework\video\sprite_particle_shape.h" />
     <ClInclude Include="framework\audio\audiocontroller.h" />
     <ClInclude Include="framework\audio\soundfx.h" />
     <ClInclude Include="framework\core\colour.h" />
@@ -320,8 +326,10 @@
     <ClInclude Include="framework\video\videocontroller.h" />
     <ClInclude Include="game\boot.h" />
     <ClInclude Include="game\game.h" />
+    <ClInclude Include="game\gameeventhandler.h" />
     <ClInclude Include="game\nettest.h" />
     <ClInclude Include="game\title.h" />
+    <ClInclude Include="game\player.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="framework\audio\audiocontroller.cpp" />
@@ -405,11 +413,13 @@
     <ClCompile Include="framework\video\plane_tilemap_paletted.cpp" />
     <ClCompile Include="framework\video\sprite.cpp" />
     <ClCompile Include="framework\video\sprite_animated.cpp" />
+    <ClCompile Include="framework\video\sprite_particle.cpp" />
+    <ClCompile Include="framework\video\sprite_particleemitter.cpp" />
     <ClCompile Include="framework\video\sprite_shape.cpp" />
     <ClCompile Include="framework\video\sprite_text.cpp" />
-    <ClCompile Include="framework\video\videocontroller.cpp" />    
+    <ClCompile Include="framework\video\videocontroller.cpp" />
     <ClCompile Include="game\game.cpp" />
-    <ClCompile Include="game\main.cpp" />    
+    <ClCompile Include="game\main.cpp" />
     <ClCompile Include="game\title.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

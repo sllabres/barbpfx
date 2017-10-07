@@ -18,8 +18,8 @@ void Title::LoadResources()
 	title->draworigin.y = title->GetDimensions().h / 2;
 	spritePlane->sprites.Add(title);
 	spritePlane->alpha = 0;
-	/*FX->audio.AddTrack("resources/main_theme.ogg");
-	FX->audio.PlayNextTrack();*/
+	FX->audio.AddTrack("resources/main_theme.ogg");
+	FX->audio.PlayNextTrack();
 	FX->CreateTimer(0.1);
 }
 
