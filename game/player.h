@@ -10,19 +10,14 @@ private:
 	std::array<Animation*, 10> animations;
 	AnimatedSprite* sprite;
 	BarbarianAnimationStore* animationStore;
-
-	void MoveRight()
-	{	
-		sprite->position.x += 1;
+	
+	void Walk(int direction)
+	{
+		sprite->position.x += direction;
 		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);		
+				
 		/*if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
 		*/
-	}
-
-	void MoveLeft()
-	{
-		sprite->position.x -= 1;
-		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);		
 		/*if (animatedSprite->position.x > 0)
 		*/
 	}
@@ -63,11 +58,11 @@ public:
 		});
 
 		actions[KEYCODE_RIGHT] = [&]() {
-			this->MoveRight();
+			this->Walk (1);
 		};
 
 		actions[KEYCODE_LEFT] = [&]() {
-			this->MoveLeft();
+			this->Walk(-1);
 		};
 	}
 
