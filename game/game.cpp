@@ -4,7 +4,7 @@
 
 void Game::LoadResources()
 {
-	gameEventHandler = new GameEventHandler();	
+	gameEventHandler = new GameEventHandler();
 	BarbarianAnimationStore* animationStore = new BarbarianAnimationStore();
 
 	display = FX->video.GetDisplay(0);
@@ -27,11 +27,11 @@ void Game::LoadResources()
 	animatedSprite->position.y = display->gameresolution.h - barbarianHeight - 10;
 	spritePlane->sprites.Add(animatedSprite);
 
-	player = new Player(gameEventHandler, animatedSprite, new BarbarianAnimationStore());
-	
+	player = new Player(gameEventHandler, animatedSprite, animationStore);
+
 	/*dummySprite = new AnimatedSprite(tiles, headless);
 	dummySprite->position.y = display->gameresolution.h - barbarianHeight - 10;
-	dummySprite->position.x = 200;	
+	dummySprite->position.x = 200;
 	spritePlane->sprites.Add(dummySprite);*/
 }
 
@@ -52,14 +52,14 @@ void Game::Finish()
 }
 
 void Game::EventOccured(Event* What)
-{	
+{
 	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYUP)
 	{
-			gameEventHandler->Publish(new KeyboardEventData(What->data.input.keyboard.keycode, GameEventType::OnKeyUp));
-	}	
+		gameEventHandler->Publish(new KeyboardEventData(What->data.input.keyboard.keycode, GameEventType::OnKeyUp));
+	}
 
 	if (What->type == EventTypes::EVENT_INPUT_KEYBOARD_KEYDOWN)
-	{	
+	{
 		gameEventHandler->Publish(new KeyboardEventData(What->data.input.keyboard.keycode, GameEventType::OnKeyDown));
 	}
 }
@@ -69,22 +69,14 @@ void Game::Update()
 	player->Update();
 
 	if (attackLocked == false) {
-		if (currentInput == KEYCODE_RIGHT) {			
-			/*if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
-				*/
-		}
-		if (currentInput == KEYCODE_LEFT) {
-			animatedSprite->animation = walking;
-			/*if (animatedSprite->position.x > 0)
-				*/
-		}
-	}	
-	else if(spinattack->currentframe == 5) {
+	}
+	else if (spinattack->currentframe == 5) {
 		attackLocked = false;
 		currentInput = 0;
 		animatedSprite->animation = standing;
 		walking->currentframe = 0;
-	} else {
+	}
+	else {
 		if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth) && spinattack->currentframe < 4)
 			animatedSprite->position.x += 1;
 	}

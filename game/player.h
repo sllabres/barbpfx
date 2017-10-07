@@ -14,18 +14,22 @@ private:
 	void MoveRight()
 	{	
 		sprite->position.x += 1;
-		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);
+		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);		
+		/*if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth))
+		*/
 	}
 
 	void MoveLeft()
 	{
 		sprite->position.x -= 1;
-		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);
+		sprite->animation = animationStore->Get(BarbarianAnimationState::Walking);		
+		/*if (animatedSprite->position.x > 0)
+		*/
 	}
 
 public:
 	void OnKeyDown(KeyboardEventData* eventData)
-	{	
+	{			
 		currentKey = eventData->key;
 	}
 
@@ -33,6 +37,7 @@ public:
 	{
 		if (eventData->key == currentKey) {
 			currentKey = 0;
+			sprite->animation->Start();
 			sprite->animation = animationStore->Get(BarbarianAnimationState::Standing);
 		}
 	}
