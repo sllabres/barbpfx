@@ -18,12 +18,12 @@ void Game::LoadResources()
 	background->draworigin.y = background->GetDimensions().h / 2;
 	spritePlane->sprites.Add(background);
 
-	headless = new Animation();
-	headless->frames.Add(new AnimationFrame(10, 15));
+	/*headless = new Animation();
+	headless->frames.Add(new AnimationFrame(10, 15));*/
 
 	Size<int> tileSize(barbarianWidth, barbarianHeight);
 	Atlas* tiles = new Atlas(new Bitmap("resources/barbarian-tileset.png"), tileSize);
-	animatedSprite = new AnimatedSprite(tiles, animationStore->Get(BarbarianAnimationState::Standing));
+	animatedSprite = new AnimatedSprite(tiles, animationStore->Get(BarbarianAnimationStore::BarbarianAnimationState::Standing));
 	animatedSprite->position.y = display->gameresolution.h - barbarianHeight - 10;
 	spritePlane->sprites.Add(animatedSprite);
 
@@ -67,23 +67,4 @@ void Game::EventOccured(Event* What)
 void Game::Update()
 {
 	player->Update();
-
-	if (attackLocked == false) {
-	}
-	else if (spinattack->currentframe == 5) {
-		attackLocked = false;
-		currentInput = 0;
-		animatedSprite->animation = standing;
-		walking->currentframe = 0;
-	}
-	else {
-		if (animatedSprite->position.x < (display->gameresolution.w - barbarianWidth) && spinattack->currentframe < 4)
-			animatedSprite->position.x += 1;
-	}
-
-	if (FX->input.keyboard.IsKeyDown(KEYCODE_SPACE) && !attackLocked) {
-		animatedSprite->animation = spinattack;
-		spinattack->Start();
-		attackLocked = true;
-	}
 }
